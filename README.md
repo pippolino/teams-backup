@@ -127,7 +127,7 @@ teams-backup-windows-x64.zip
 
 Il destinatario deve estrarre lo ZIP, rinominare `config.example.json` in `config.json`, inserire il client ID Entra e avviare `teams-backup.exe` da PowerShell.
 
-Su macOS il risultato è in `dist/teams-backup`. Il workflow `.github/workflows/build.yml` produce automaticamente artefatti completi per macOS Apple Silicon, macOS Intel e Windows x64 quando viene avviato manualmente o viene pubblicato un tag `v*`. Gli artefatti scaricati da GitHub Actions includono anche configurazione di esempio e README.
+Su macOS il risultato è in `dist/teams-backup`. Il workflow `.github/workflows/build.yml` produce automaticamente artefatti completi per macOS Apple Silicon e Windows x64 quando viene avviato manualmente o viene pubblicato un tag `v*`. Gli artefatti scaricati da GitHub Actions includono anche configurazione di esempio e README.
 
 I binari non firmati possono mostrare avvisi di Gatekeeper o SmartScreen. Per una distribuzione aziendale è opportuno firmare il binario Windows e firmare/notarizzare quello macOS con i certificati dell'organizzazione.
 
