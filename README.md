@@ -58,10 +58,35 @@ Windows PowerShell:
 macOS:
 
 ```bash
-./teams-backup --output "$HOME/Documents"
+bash ./avvia-mac.command --output "$HOME/Documents"
 ```
 
+L'avviatore macOS rimuove automaticamente l'attributo di quarantena dal binario e lo rende eseguibile. Questo passaggio deve avvenire sul Mac dopo il download, perché è macOS ad aggiungere la quarantena al file scaricato.
+
 Il programma mostra un codice, apre la pagina Microsoft di accesso e attende login, MFA ed eventuale consenso. Al termine apre `index.html` dal backup appena creato. Usa `--no-browser` per non aprire automaticamente la pagina di login e `--no-open` per non aprire l'archivio.
+
+### Prima prova su macOS
+
+1. Scarica l'artefatto `teams-backup-macos-arm64` dalla pipeline GitHub Actions.
+2. Estrai lo ZIP in una cartella, per esempio `Downloads/teams-backup-macos-arm64`.
+3. Rinomina `config.example.json` in `config.json` e inserisci `client_id` e `tenant` della App Registration Entra.
+4. Apri Terminale e spostati nella cartella estratta:
+
+   ```bash
+   cd "$HOME/Downloads/teams-backup-macos-arm64"
+   ```
+
+5. Avvia il test:
+
+   ```bash
+   bash ./avvia-mac.command --output "$HOME/Documents" --no-open
+   ```
+
+6. Completa il login Microsoft nella pagina aperta dal browser.
+7. Verifica che in `Documenti` sia comparsa una cartella `TeamsBackup-AAAA-MM-GG_ora` contenente `index.html`, `export-info.json` e la cartella `json`.
+8. Apri `index.html`: devono comparire le chat, la ricerca e i filtri Individuali, Gruppi e Riunioni.
+
+Se il test termina con `Backup completato`, il login, Microsoft Graph e la scrittura locale funzionano correttamente. Eventuali chat non esportabili vengono indicate come avvisi in `export-info.json`.
 
 La cartella risultante ha questa forma:
 
@@ -127,7 +152,7 @@ teams-backup-windows-x64.zip
 
 Il destinatario deve estrarre lo ZIP, rinominare `config.example.json` in `config.json`, inserire il client ID Entra e avviare `teams-backup.exe` da PowerShell.
 
-Su macOS il risultato è in `dist/teams-backup`. Il workflow `.github/workflows/build.yml` produce automaticamente artefatti completi per macOS Apple Silicon e Windows x64 quando viene avviato manualmente o viene pubblicato un tag `v*`. Gli artefatti scaricati da GitHub Actions includono anche configurazione di esempio e README.
+Su macOS il risultato è in `dist/teams-backup`; la build aggiunge anche `dist/avvia-mac.command`. Il workflow `.github/workflows/build.yml` produce automaticamente artefatti completi per macOS Apple Silicon e Windows x64 quando viene avviato manualmente o viene pubblicato un tag `v*`. Gli artefatti scaricati da GitHub Actions includono anche configurazione di esempio e README.
 
 I binari non firmati possono mostrare avvisi di Gatekeeper o SmartScreen. Per una distribuzione aziendale è opportuno firmare il binario Windows e firmare/notarizzare quello macOS con i certificati dell'organizzazione.
 
