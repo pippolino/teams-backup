@@ -27,11 +27,15 @@ jobs:
       - if: runner.os == 'macOS'
         run: |
           cp packaging/avvia-mac.command dist/avvia-mac.command
+          cp config.example.json dist/config.example.json
+          cp README.md dist/README.md
           chmod +x dist/avvia-mac.command
+      - if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Copy-Item config.example.json dist/config.example.json
+          Copy-Item README.md dist/README.md
       - uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.artifact }}
-          path: |
-            dist/*
-            config.example.json
-            README.md
+          path: dist/*
