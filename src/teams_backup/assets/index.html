@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'">
+  <title>Archivio Teams</title>
+  <link rel="stylesheet" href="archive.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail">
+      <header class="brand">
+        <span class="brand-mark" aria-hidden="true">T/</span>
+        <div><strong>Archivio Teams</strong><small id="owner">Backup locale</small></div>
+      </header>
+      <label class="search-wrap">
+        <span>Cerca</span>
+        <input id="search" type="search" placeholder="Persona, chat o messaggio…" autocomplete="off">
+      </label>
+      <nav class="filters" aria-label="Filtra conversazioni">
+        <button class="filter active" data-type="all">Tutte <span id="count-all">0</span></button>
+        <button class="filter" data-type="oneOnOne">Individuali</button>
+        <button class="filter" data-type="group">Gruppi</button>
+        <button class="filter" data-type="meeting">Riunioni</button>
+      </nav>
+      <div id="chat-list" class="chat-list" role="list"></div>
+      <footer><span id="export-date"></span><a href="json/archive.json">JSON</a></footer>
+    </aside>
+    <main id="main" class="main">
+      <section class="empty-state">
+        <span class="empty-index">01</span>
+        <h1>Le tue conversazioni,<br>senza scadenza.</h1>
+        <p>Scegli una chat dall’elenco. Tutto ciò che vedi è contenuto in questa cartella.</p>
+      </section>
+    </main>
+  </div>
+  <script src="archive-data.js"></script>
+  <script src="archive.js"></script>
+</body>
+</html>

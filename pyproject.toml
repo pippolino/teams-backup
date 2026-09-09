@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "teams-local-backup"
+version = "0.1.0"
+description = "Self-service local backup of Microsoft Teams chats"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+  "bleach>=6.2,<7",
+  "msal>=1.31,<2",
+  "requests>=2.32,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pyinstaller>=6.11,<7",
+  "pytest>=8.3,<9",
+  "responses>=0.25,<1",
+]
+
+[project.scripts]
+teams-backup = "teams_backup.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+teams_backup = ["assets/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

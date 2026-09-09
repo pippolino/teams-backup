@@ -1,0 +1,10 @@
+.venv/
+AGENTS.md
+build/
+dist/
+release/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+.pyinstaller-cache/
+config.json
