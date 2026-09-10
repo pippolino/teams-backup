@@ -14,11 +14,15 @@ jobs:
           - os: macos-15
             artifact: teams-backup-macos-arm64
             dist_path: dist/*
+            package_dir: dist
           - os: windows-2022
             artifact: teams-backup-windows-x64
             # The Windows build is onedir, so the payload lives in a folder.
             dist_path: dist/teams-backup/*
+            package_dir: dist/teams-backup
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -50,3 +54,30 @@ jobs:
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.dist_path }}
+
+      # Everything below runs only for a v* tag, and produces the downloadable
+      # assets on the release page. The archives are built on the runner rather
+      # than from the artifacts above, because actions/upload-artifact does not
+      # preserve the executable bit that the macOS binary needs.
+      - name: Create release archive (macOS)
+        if: runner.os == 'macOS' && startsWith(github.ref, 'refs/tags/v')
+        run: cd "${{ matrix.package_dir }}" && zip -r "$GITHUB_WORKSPACE/${{ matrix.artifact }}.zip" .
+
+      - name: Create release archive (Windows)
+        if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: Compress-Archive -Path "${{ matrix.package_dir }}/*" -DestinationPath "${{ matrix.artifact }}.zip" -Force
+
+      - name: Attach archive to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Both matrix jobs race to create the release when a tag is pushed
+          # without one, so a failed create is expected and ignored. --clobber
+          # keeps re-runs idempotent.
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
+            || gh release create "$GITHUB_REF_NAME" --generate-notes \
+            || true
+          gh release upload "$GITHUB_REF_NAME" "${{ matrix.artifact }}.zip" --clobber
