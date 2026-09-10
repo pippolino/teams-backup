@@ -3,25 +3,25 @@ date: 2026-09-08
 topic: teams-local-backup
 ---
 
-# Backup locale delle chat Teams
+# Local backup of Teams chats
 
-## Cosa costruiamo
+## What we are building
 
-Un'applicazione a riga di comando distribuibile come singolo eseguibile. Ogni utente accede direttamente a Microsoft 365 tramite device-code flow e salva sul proprio computer le chat 1:1, di gruppo e delle riunioni.
+A command-line application distributed as a single executable. Each user signs in to Microsoft 365 directly through the device code flow and saves their one-on-one, group, and meeting chats onto their own computer.
 
-## Perché questo approccio
+## Why this approach
 
-Un client pubblico Python con MSAL è portabile, non richiede segreti né un backend, e consente pacchetti nativi tramite PyInstaller. Un archivio HTML statico funziona anche quando il tool non è più installato.
+A Python public client with MSAL is portable, needs no secrets and no backend, and allows native packages through PyInstaller. A static HTML archive keeps working even once the tool is no longer installed.
 
-## Decisioni chiave
+## Key decisions
 
-- Permessi delegated `User.Read` e `Chat.Read`.
-- Dati Graph grezzi conservati separatamente dalla vista HTML sanificata.
-- Paginazione completa, retry su throttling ed esportazione parziale con avvisi.
-- Nessun token persistente e nessun invio di dati a servizi diversi da Microsoft Graph.
-- Canali e download degli allegati rinviati dopo l'MVP.
+- Delegated `User.Read` and `Chat.Read` permissions.
+- Raw Graph data kept separate from the sanitised HTML view.
+- Full pagination, retry on throttling, and partial export with warnings.
+- No persistent tokens and no data sent to any service other than Microsoft Graph.
+- Channels and attachment downloads deferred until after the MVP.
 
-## Questioni aperte
+## Open questions
 
-- Firma e notarizzazione dei binari dipendono dai certificati del distributore.
-- Alcuni tenant richiedono approvazione amministrativa nonostante i permessi delegated.
+- Signing and notarising the binaries depends on the distributor's certificates.
+- Some tenants require administrative approval despite the delegated permissions.

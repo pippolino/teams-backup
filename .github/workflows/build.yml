@@ -13,8 +13,11 @@ jobs:
         include:
           - os: macos-15
             artifact: teams-backup-macos-arm64
+            dist_path: dist/*
           - os: windows-2022
             artifact: teams-backup-windows-x64
+            # The Windows build is onedir, so the payload lives in a folder.
+            dist_path: dist/teams-backup/*
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
@@ -26,16 +29,24 @@ jobs:
       - run: python -m PyInstaller --clean --noconfirm teams-backup.spec
       - if: runner.os == 'macOS'
         run: |
-          cp packaging/avvia-mac.command dist/avvia-mac.command
+          cp packaging/start-mac.command dist/start-mac.command
           cp config.example.json dist/config.example.json
           cp README.md dist/README.md
-          chmod +x dist/avvia-mac.command
+          chmod +x dist/start-mac.command
+      - if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./packaging/sign-windows.ps1 -Path dist/teams-backup
+        env:
+          TEAMS_BACKUP_SIGN_SHA1: ${{ secrets.SIGN_SHA1 }}
+          TEAMS_BACKUP_SIGN_SUBJECT: ${{ secrets.SIGN_SUBJECT }}
       - if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          Copy-Item config.example.json dist/config.example.json
-          Copy-Item README.md dist/README.md
+          # config.json is read from next to the executable, so the example and
+          # the README go inside the application folder.
+          Copy-Item config.example.json dist/teams-backup/config.example.json
+          Copy-Item README.md dist/teams-backup/README.md
       - uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.artifact }}
-          path: dist/*
+          path: ${{ matrix.dist_path }}

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'">
-  <title>Archivio Teams</title>
+  <title>Teams Archive</title>
   <link rel="stylesheet" href="archive.css">
 </head>
 <body>
@@ -12,17 +12,17 @@
     <aside class="rail">
       <header class="brand">
         <span class="brand-mark" aria-hidden="true">T/</span>
-        <div><strong>Archivio Teams</strong><small id="owner">Backup locale</small></div>
+        <div><strong>Teams Archive</strong><small id="owner">Local backup</small></div>
       </header>
       <label class="search-wrap">
-        <span>Cerca</span>
-        <input id="search" type="search" placeholder="Persona, chat o messaggio…" autocomplete="off">
+        <span>Search</span>
+        <input id="search" type="search" placeholder="Person, chat, or message…" autocomplete="off">
       </label>
-      <nav class="filters" aria-label="Filtra conversazioni">
-        <button class="filter active" data-type="all">Tutte <span id="count-all">0</span></button>
-        <button class="filter" data-type="oneOnOne">Individuali</button>
-        <button class="filter" data-type="group">Gruppi</button>
-        <button class="filter" data-type="meeting">Riunioni</button>
+      <nav class="filters" aria-label="Filter conversations">
+        <button class="filter active" data-type="all">All <span id="count-all">0</span></button>
+        <button class="filter" data-type="oneOnOne">One-on-one</button>
+        <button class="filter" data-type="group">Groups</button>
+        <button class="filter" data-type="meeting">Meetings</button>
       </nav>
       <div id="chat-list" class="chat-list" role="list"></div>
       <footer><span id="export-date"></span><a href="json/archive.json">JSON</a></footer>
@@ -30,8 +30,8 @@
     <main id="main" class="main">
       <section class="empty-state">
         <span class="empty-index">01</span>
-        <h1>Le tue conversazioni,<br>senza scadenza.</h1>
-        <p>Scegli una chat dall’elenco. Tutto ciò che vedi è contenuto in questa cartella.</p>
+        <h1>Your conversations,<br>with no expiry date.</h1>
+        <p>Pick a chat from the list. Everything you see lives inside this folder.</p>
       </section>
     </main>
   </div>

@@ -40,7 +40,7 @@ def export_chats(
     warnings: list[str] = []
     message_count = 0
     for index, chat in enumerate(chats, start=1):
-        emit(f"[{index}/{len(chats)}] Esporto {_chat_label(chat, [])}")
+        emit(f"[{index}/{len(chats)}] Exporting {_chat_label(chat, [])}")
         chat_id = chat["id"]
         try:
             members, member_pages = graph.get_all(chat_path(chat_id, "members"))
@@ -50,7 +50,7 @@ def export_chats(
         except GraphError as exc:
             warning = f"Chat {chat_id}: {exc}"
             warnings.append(warning)
-            emit(f"  Avviso: {warning}")
+            emit(f"  Warning: {warning}")
             continue
 
         chat_dir = raw_dir / f"chat-{index:04d}"
@@ -102,8 +102,8 @@ def _chat_label(chat: dict, members: list[dict], current_user_id: str | None = N
     names = [str(name) for name in names if name]
     if names:
         return ", ".join(names[:4]) + ("…" if len(names) > 4 else "")
-    labels = {"oneOnOne": "Chat individuale", "group": "Chat di gruppo", "meeting": "Chat riunione"}
-    return labels.get(chat.get("chatType"), "Chat Teams")
+    labels = {"oneOnOne": "One-on-one chat", "group": "Group chat", "meeting": "Meeting chat"}
+    return labels.get(chat.get("chatType"), "Teams chat")
 
 
 def _unique_output_dir(parent: Path, exported_at: datetime) -> Path:

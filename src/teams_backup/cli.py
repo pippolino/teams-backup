@@ -15,20 +15,20 @@ from teams_backup.graph import GraphClient, GraphError
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="teams-backup",
-        description="Esporta localmente le chat Teams accessibili all'utente.",
+        description="Export the Teams chats accessible to the signed-in user into a local archive.",
     )
     parser.add_argument("--version", action="version", version=__version__)
-    parser.add_argument("--config", type=Path, help="File JSON con client_id e tenant")
-    parser.add_argument("--client-id", help="Application (client) ID di Entra ID")
-    parser.add_argument("--tenant", help="Tenant ID, dominio verificato o organizations")
+    parser.add_argument("--config", type=Path, help="JSON file holding client_id and tenant")
+    parser.add_argument("--client-id", help="Entra ID Application (client) ID")
+    parser.add_argument("--tenant", help="Tenant ID, verified domain, or organizations")
     parser.add_argument(
         "--output",
         type=Path,
         default=Path.cwd(),
-        help="Cartella in cui creare il backup (predefinita: cartella corrente)",
+        help="Folder to create the backup in (default: current folder)",
     )
-    parser.add_argument("--no-browser", action="store_true", help="Non aprire il browser automaticamente")
-    parser.add_argument("--no-open", action="store_true", help="Non aprire l'archivio al termine")
+    parser.add_argument("--no-browser", action="store_true", help="Do not open the browser automatically")
+    parser.add_argument("--no-open", action="store_true", help="Do not open the archive when finished")
     return parser
 
 
@@ -37,20 +37,20 @@ def main(argv: list[str] | None = None) -> int:
     try:
         config_path = args.config or _discover_config()
         config = load_config(config_path, args.client_id, args.tenant)
-        print("Accesso a Microsoft 365…")
+        print("Signing in to Microsoft 365…")
         token = acquire_access_token(config, open_browser=not args.no_browser)
-        print("Accesso completato. Inizio esportazione…")
+        print("Signed in. Starting export…")
         result = export_chats(GraphClient(token), args.output.expanduser().resolve())
     except (ValueError, AuthenticationError, GraphError, OSError) as exc:
-        print(f"Errore: {exc}", file=sys.stderr)
+        print(f"Error: {exc}", file=sys.stderr)
         return 1
 
     print(
-        f"Backup completato: {result.chat_count} chat, "
-        f"{result.message_count} messaggi.\n{result.output_dir}"
+        f"Backup complete: {result.chat_count} chats, "
+        f"{result.message_count} messages.\n{result.output_dir}"
     )
     if result.warnings:
-        print(f"Completato con {len(result.warnings)} avvisi; consulta export-info.json.")
+        print(f"Completed with {len(result.warnings)} warnings; see export-info.json.")
     if not args.no_open:
         webbrowser.open((result.output_dir / "index.html").as_uri())
     return 0

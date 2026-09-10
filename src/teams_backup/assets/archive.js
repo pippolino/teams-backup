@@ -7,13 +7,13 @@
   const main = document.querySelector("#main");
   const search = document.querySelector("#search");
 
-  const typeLabels = { oneOnOne: "Individuale", group: "Gruppo", meeting: "Riunione" };
-  const dateFormatter = new Intl.DateTimeFormat("it-IT", { dateStyle: "medium" });
-  const timeFormatter = new Intl.DateTimeFormat("it-IT", { hour: "2-digit", minute: "2-digit" });
+  const typeLabels = { oneOnOne: "One-on-one", group: "Group", meeting: "Meeting" };
+  const dateFormatter = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" });
+  const timeFormatter = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit" });
 
-  document.querySelector("#owner").textContent = archive.user.displayName || archive.user.userPrincipalName || "Backup locale";
+  document.querySelector("#owner").textContent = archive.user.displayName || archive.user.userPrincipalName || "Local backup";
   document.querySelector("#count-all").textContent = archive.chatCount;
-  document.querySelector("#export-date").textContent = `Esportato ${formatDate(archive.exportedAt)}`;
+  document.querySelector("#export-date").textContent = `Exported ${formatDate(archive.exportedAt)}`;
 
   document.querySelectorAll(".filter").forEach((button) => {
     button.addEventListener("click", () => {
@@ -25,7 +25,7 @@
   });
 
   search.addEventListener("input", () => {
-    state.query = search.value.trim().toLocaleLowerCase("it");
+    state.query = search.value.trim().toLocaleLowerCase("en");
     renderList();
   });
 
@@ -33,7 +33,7 @@
     list.replaceChildren();
     const chats = archive.chats.filter(matches);
     if (!chats.length) {
-      const empty = element("p", "no-results", "Nessuna conversazione trovata.");
+      const empty = element("p", "no-results", "No conversations found.");
       list.append(empty);
       return;
     }
@@ -55,7 +55,7 @@
     if (!state.query) return true;
     const memberText = chat.members.map((member) => `${member.displayName || ""} ${member.email || ""}`).join(" ");
     const messageText = chat.messages.map((message) => stripHtml(message.body?.content || "")).join(" ");
-    return `${chat.title} ${memberText} ${messageText}`.toLocaleLowerCase("it").includes(state.query);
+    return `${chat.title} ${memberText} ${messageText}`.toLocaleLowerCase("en").includes(state.query);
   }
 
   function selectChat(chat) {
@@ -66,9 +66,9 @@
     header.append(element("div", "conversation-kicker", typeLabels[chat.type] || chat.type));
     header.append(element("h1", "", chat.title));
     const memberNames = chat.members.map((member) => member.displayName || member.email).filter(Boolean).join(" · ");
-    header.append(element("div", "participants", memberNames || "Partecipanti non disponibili"));
+    header.append(element("div", "participants", memberNames || "Participants unavailable"));
     if (chat.webUrl) {
-      const link = element("a", "teams-link", "Apri in Teams ↗");
+      const link = element("a", "teams-link", "Open in Teams ↗");
       link.href = chat.webUrl;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
@@ -86,14 +86,14 @@
       section.append(stream);
       messages.append(section);
     });
-    if (!chat.messages.length) messages.append(element("p", "no-results", "Questa chat non contiene messaggi esportabili."));
+    if (!chat.messages.length) messages.append(element("p", "no-results", "This chat contains no exportable messages."));
     main.append(messages);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function renderMessage(message) {
     const wrapper = element("article", "message");
-    const author = message.from?.user?.displayName || message.from?.application?.displayName || "Sistema";
+    const author = message.from?.user?.displayName || message.from?.application?.displayName || "System";
     const meta = element("div", "message-meta");
     meta.append(element("strong", "", author));
     const time = element("time", "", formatTime(message.createdDateTime));
@@ -132,7 +132,7 @@
 
   function formatDate(value) {
     const date = new Date(value);
-    return Number.isNaN(date.valueOf()) ? "Data sconosciuta" : dateFormatter.format(date);
+    return Number.isNaN(date.valueOf()) ? "Unknown date" : dateFormatter.format(date);
   }
 
   function formatTime(value) {
